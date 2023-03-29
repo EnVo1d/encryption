@@ -3,16 +3,11 @@ var fs = require('fs')
 
 var options = {
 	alphabet: 'abcdefghijklmnopqrstuvwxyz'.split(''),
-	key: 0,
-	mode: '',
+	key: undefined,
+	mode: undefined,
 }
 
-var continueProcessing = true,
-	currentErrorcode
-
-process.on('exit', function () {
-	process.reallyExit(currentErrorcode)
-})
+var continueProcessing = true
 
 var checkArgFunc = function (arg, option) {
 	if (!option) {
@@ -46,8 +41,10 @@ args = args.filter(function (arg) {
 		case 'key':
 			if (checkArgFunc(arg, match[2])) {
 				options.key = match[2]
-				if (Number.isInteger(options.key))
-					throw new Error('The key is a number')
+				if (Number.isInteger(options.key)) {
+					console.error('The key is a number')
+					process.exit()
+				}
 			}
 			break
 		case 'mode':
@@ -57,14 +54,22 @@ args = args.filter(function (arg) {
 			break
 		default:
 			continueProcessing = false
-			currentErrorcode = 1
 			break
 	}
 })
 if (!continueProcessing) {
-	return
+	process.exit()
 }
 var input = args[1]
+if (input === undefined) {
+	console.error('Enter file path')
+	process.exit()
+}
+
+if (options.key === undefined && options.mode === undefined) {
+	console.error('Mode and key required parameters')
+	process.exit()
+}
 
 var shiftArray = function (array, num) {
 	const copy = [...array]
@@ -121,7 +126,10 @@ var getOriginPos = function (row, char) {
 var processFile = function (data, key) {
 	let processedData = ''
 
-	if (data.length === 0) throw new Error('data length = 0')
+	if (data.length === 0) {
+		console.error('File is empty!')
+		process.exit()
+	}
 
 	data = data.toLowerCase()
 
@@ -150,6 +158,7 @@ var processFile = function (data, key) {
 		{ flag: 'w+' },
 		err => {
 			console.error(err)
+			process.exit()
 		}
 	)
 }
@@ -157,7 +166,7 @@ var processFile = function (data, key) {
 fs.readFile(input, 'utf-8', (err, data) => {
 	if (err) {
 		console.error(err)
-		return
+		process.exit()
 	}
 	processFile(data, options.key)
 })

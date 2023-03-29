@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"test": "node --inspect index.js test.txt --key=5 --mode=ENCRYPT",
+		"test": "node --inspect index.js --key=5 --mode=ENCRYPT",
 		"test:alph": "node --inspect index.js test_a.txt --key=10 --mode=ENCRYPT --alph=абвгдеєжзиіїйклмнопрстуфхцчшщьюя",
 		"start:encrypt": "node index.js test.txt --key=5 --mode=ENCRYPT",
 		"start:decrypt": "node index.js encrypted_test.txt --key=5 --mode=DECRYPT"
