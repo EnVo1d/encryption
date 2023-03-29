@@ -1,0 +1,16 @@
+{
+	"name": "vigenere",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "node --inspect index.js test.txt --key=key --mode=ENCRYPT",
+		"test:alph": "node --inspect index.js test_a.txt --key=ключ --mode=ENCRYPT --alph=абвгдеєжзиіїйклмнопрстуфхцчшщьюя",
+		"test:alph:decrypt": "node --inspect index.js encrypted_test_a.txt --key=ключ --mode=DECRYPT --alph=абвгдеєжзиіїйклмнопрстуфхцчшщьюя",
+		"start:encrypt": "node index.js test.txt --key=key --mode=ENCRYPT",
+		"start:decrypt": "node index.js encrypted_test.txt --key=key --mode=DECRYPT"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}
