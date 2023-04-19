@@ -112,6 +112,7 @@ var processFile = function (data, keys) {
 		for (let i = 0; i < data.length; i++) {
 			// processedData = (ax + b) mod alphabet.length
 			if (options.alphabet.includes(data[i])) {
+				// якщо символ є в алфавіті
 				let encryptChar =
 					(keys[0] * options.alphabet.indexOf(data[i]) + keys[1]) %
 					options.alphabet.length
@@ -120,7 +121,6 @@ var processFile = function (data, keys) {
 			} else processedData += data[i]
 		}
 	else {
-		//a^-1 = m - a
 		for (let i = 0; ; i++) {
 			if ((i * keys[0]) % options.alphabet.length === 1) {
 				key = i
@@ -128,8 +128,9 @@ var processFile = function (data, keys) {
 			}
 		}
 		for (let i = 0; i < data.length; i++) {
-			// processedData = a^-1 * (y - b) mod alphabet.length
+			// processedData = a^-1 * (y + alphabet.length - b) mod alphabet.length
 			if (options.alphabet.includes(data[i])) {
+				// якщо символ є в алфавіті
 				let encryptChar =
 					(key *
 						(options.alphabet.indexOf(data[i]) +
