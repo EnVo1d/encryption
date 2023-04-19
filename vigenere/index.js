@@ -35,7 +35,7 @@ args = args.filter(function (arg) {
 	switch (arg) {
 		case 'alph':
 			if (checkArgFunc(arg, match[2])) {
-				options.alphabet = (match[2] + '_').split('')
+				options.alphabet = match[2].split('')
 			}
 			break
 		case 'key':
@@ -94,12 +94,12 @@ var buildSchema = function () {
 }
 
 var buildTable = function () {
-	const table = buildSchema()
+	const table = buildSchema() // будування схеми квадрату
 
 	for (const [i, row] of options.alphabet.entries()) {
-		const shifted = shiftArray(options.alphabet, i)
+		const shifted = shiftArray(options.alphabet, i) // зсув рядка
 		for (const [j, column] of options.alphabet.entries()) {
-			table[row][column] = shifted[j]
+			table[row][column] = shifted[j] // заповнення осередків квадрату
 		}
 	}
 	return table
@@ -149,11 +149,11 @@ var processFile = function (data, key) {
 	}
 
 	fs.writeFile(
-		(options.mode === 'ENCRYPT'
-			? 'encrypted_'
+		options.mode === 'ENCRYPT'
+			? `${input}_encrypted`
 			: options.mode === 'DECRYPT'
-			? 'decrypted_'
-			: '') + input,
+			? `${input}_decrypted`
+			: '',
 		processedData,
 		{ flag: 'w+' },
 		err => {

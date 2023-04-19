@@ -5,8 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "node --inspect index.js test.txt --key=key --mode=ENCRYPT",
-		"test:alph": "node --inspect index.js test_a.txt --key=ключ --mode=ENCRYPT --alph=абвгдеєжзиіїйклмнопрстуфхцчшщьюя",
-		"test:alph:decrypt": "node --inspect index.js encrypted_test_a.txt --key=ключ --mode=DECRYPT --alph=абвгдеєжзиіїйклмнопрстуфхцчшщьюя",
+		"test:alph": "node --inspect index.js test_a.txt --key=ключ --mode=ENCRYPT --alph=абвгдеєжзиіїйклмнопрстуфхцчшщьюя_",
+		"test:alph:decrypt": "node --inspect index.js encrypted_test_a.txt --key=ключ --mode=DECRYPT --alph=абвгдеєжзиіїйклмнопрстуфхцчшщьюя_",
 		"start:encrypt": "node index.js test.txt --key=key --mode=ENCRYPT",
 		"start:decrypt": "node index.js encrypted_test.txt --key=key --mode=DECRYPT"
 	},

@@ -2,8 +2,8 @@ var args = process.argv.slice(1) // отримання параметрів за
 var fs = require('fs') // підключення бібл для взаємодії с файловою системою
 
 var options = {
-	alphabet: 'abcdefghijklmnopqrstuvwxyz -_.&?!@ #/',
-	key: undefined,
+	alphabet: 'abcdefghijklmnopqrstuvwxyz',
+	keys: [],
 	mode: undefined,
 } // об'єкт для збереження параметрів запуску
 
@@ -40,10 +40,16 @@ args = args.filter(function (arg) {
 				options.alphabet = match[2]
 			}
 			break
-		case 'key':
+		case 'keys':
 			if (checkArgFunc(arg, match[2])) {
-				options.key = parseInt(match[2])
-				if (isNaN(options.key)) {
+				let tmp = match[2].split(';')
+				options.keys.push(parseInt(tmp.at(0)))
+				if (isNaN(options.keys.at(0))) {
+					console.error('Key is not a number')
+					process.exit()
+				}
+				options.keys.push(parseInt(tmp.at(1)))
+				if (isNaN(options.keys.at(1))) {
 					console.error('Key is not a number')
 					process.exit()
 				}
@@ -68,8 +74,8 @@ if (input === undefined) {
 	console.error('Enter file path')
 	process.exit()
 }
-
-if (options.key === undefined && options.mode === undefined) {
+console.log(options.keys)
+if (options.keys.length <= 1 || options.mode === undefined) {
 	// якщо параметри ключ та режим не встановлені - вийти з програми
 	console.error('Mode and key required parameters')
 	process.exit()
@@ -92,11 +98,8 @@ var writeResult = function (data) {
 	)
 }
 
-var processFile = function (data, shift) {
-	// обробка файлу, приймає дані файлу та ключ
+var processFile = function (data, keys) {
 	let processedData = '' // змінна для зберігання результату
-
-	if (shift > options.alphabet.length) shift = shift % options.alphabet.length // зменшення ключа у разі якщо він більший довжини алфавіту
 
 	if (data.length === 0) {
 		console.error('File is empty!')
@@ -105,30 +108,38 @@ var processFile = function (data, shift) {
 
 	data = data.toLowerCase() // переведення даниих в нижній регістр
 
-	for (let i = 0; i < data.length; i++) {
-		// цикл шифрування
-		if (options.alphabet.indexOf(data[i]) !== -1) {
-			// перевірка на входження символа в алфавіт
-			const alphabetIndex = options.alphabet.indexOf(data[i]) // отримання індексу символа в алфавіті
+	if (options.mode === 'ENCRYPT')
+		for (let i = 0; i < data.length; i++) {
+			// processedData = (ax + b) mod alphabet.length
+			if (options.alphabet.includes(data[i])) {
+				let encryptChar =
+					(keys[0] * options.alphabet.indexOf(data[i]) + keys[1]) %
+					options.alphabet.length
 
-			if (options.mode === 'ENCRYPT') {
-				// визначення типу операції
-				if (options.alphabet[alphabetIndex + shift])
-					// перевірка чи є символ в алфавіті з зсунутим індексом
-					processedData += options.alphabet[alphabetIndex + shift]
-				// додавання зсунутого символу
-				else
-					processedData +=
-						options.alphabet[alphabetIndex + shift - options.alphabet.length] // якщо виходе за границі алфавіту, відраховується з початку
-			} else {
-				// дешифрування - аналогічно шифруванню, тільки з зсувом в зворотну сторону алфавіту
-				if (options.alphabet[alphabetIndex - shift])
-					processedData += options.alphabet[alphabetIndex - shift]
-				else
-					processedData +=
-						options.alphabet[alphabetIndex - shift + options.alphabet.length]
+				processedData += options.alphabet[encryptChar]
+			} else processedData += data[i]
+		}
+	else {
+		//a^-1 = m - a
+		for (let i = 0; ; i++) {
+			if ((i * keys[0]) % options.alphabet.length === 1) {
+				key = i
+				break
 			}
-		} else processedData += data[i] // додавання символів які не знайдено в алфавіті
+		}
+		for (let i = 0; i < data.length; i++) {
+			// processedData = a^-1 * (y - b) mod alphabet.length
+			if (options.alphabet.includes(data[i])) {
+				let encryptChar =
+					(key *
+						(options.alphabet.indexOf(data[i]) +
+							options.alphabet.length -
+							keys[1])) %
+					options.alphabet.length
+
+				processedData += options.alphabet[encryptChar]
+			} else processedData += data[i]
+		}
 	}
 	writeResult(processedData)
 }
@@ -139,5 +150,5 @@ fs.readFile(input, 'utf-8', (err, data) => {
 		console.error(err)
 		process.exit()
 	}
-	processFile(data, options.key) // запуск обробки файлу
+	processFile(data, options.keys) // запуск обробки файлу
 })

@@ -1,0 +1,17 @@
+{
+	"name": "affine",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "node --inspect index.js test.txt --keys=5;12 --mode=ENCRYPT",
+		"test:alph": "node --inspect index.js test.txt --keys=5;12 --mode=ENCRYPT --alph=абвгдеєжзиіїйклмнопрстуфхцчшщьюя",
+		"test:alph:decrypt": "node --inspect index.js test.txt_encrypted --key=5;12 --mode=DECRYPT --alph=абвгдеєжзиіїйклмнопрстуфхцчшщьюя",
+		"start:encrypt": "node index.js test.txt --keys=5;12 --mode=ENCRYPT",
+		"start:decrypt": "node index.js test.txt_encrypted --keys=5;12 --mode=DECRYPT"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {}
+}
